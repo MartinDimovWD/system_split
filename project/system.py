@@ -19,7 +19,7 @@ class System:
     @staticmethod
     def register_express_software(hardware_name, name, capacity_consumption, memory_consumption):
         for hardware in System._hardware:
-            if hardware_name == hardware.name:
+            if hardware.name == hardware_name:
                 expr_soft = ExpressSoftware(name, capacity_consumption, memory_consumption)
                 hardware.install(expr_soft)
                 System._software.append(expr_soft)
@@ -30,7 +30,7 @@ class System:
     @staticmethod
     def register_light_software(hardware_name, name, capacity_consumption, memory_consumption):
         for hardware in System._hardware:
-            if hardware_name == hardware.name:
+            if hardware.name == hardware_name:
                 light_soft = LightSoftware(name, capacity_consumption, memory_consumption)
                 hardware.install(light_soft)
                 System._software.append(light_soft)
@@ -58,7 +58,29 @@ class System:
 
     @staticmethod
     def system_split():
-        return 'ok'
+        res = []
+        for hardware in System._hardware:
+            hard_component = hardware.name
+            expr_components = len([s_component for s_component in hardware.software_components if s_component.software_type == 'Express'])
+            light_components = len([s_component for s_component in hardware.software_components if s_component.software_type == 'Light'])
+            memory_used_soft = sum([soft.memory_consumption for soft in hardware.software_components])
+            memory_hardware = hardware.memory
+            capacity_used_soft = sum([soft.capacity_consumption for soft in hardware.software_components])
+            capacity_hardware = hardware.capacity
+            hardware_type = hardware.hardware_type
+            if hardware.software_components:
+                software_comps = ", ".join([soft.name for soft in hardware.software_components])
+            else:
+                software_comps = 'None'
+
+            res.append(f'Hardware Component - {hard_component}\n' \
+                   f'Express Software Components: {expr_components}\n' \
+                   f'Light Software Components: {light_components}\n' \
+                   f'Memory Usage: {memory_used_soft} / {memory_hardware}\n' \
+                   f'Capacity Usage: {capacity_used_soft} / {int(capacity_hardware)}\n' \
+                   f'Type: {hardware_type}\n' \
+                   f'Software Components: {software_comps}')
+        return "\n".join(res)
 
     @staticmethod
     def calc_total_memory():
@@ -75,7 +97,7 @@ class System:
         software_capacity = 0
         hardware_capacity = 0
         for software in System._software:
-            software_capacity += software.memory_capacity
+            software_capacity += software.capacity_consumption
         for hardware in System._hardware:
             hardware_capacity += hardware.capacity
         return f'{int(software_capacity)} / {int(hardware_capacity)}'

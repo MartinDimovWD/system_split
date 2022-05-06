@@ -1,8 +1,6 @@
 from project.hardware.hardware import Hardware
 from math import floor
 
-from project.software.light_software import LightSoftware
-
 
 class HeavyHardware(Hardware):
     def __init__(self, name, capacity, memory, hardware_type='Heavy'):
@@ -13,7 +11,3 @@ class HeavyHardware(Hardware):
         self.software_components = []
         # test the rounding
 
-
-heavy = HeavyHardware('komp', 3,4)
-heavy.install(LightSoftware('soft', 4, 4))
-print(heavy.software_components)
